@@ -15,13 +15,13 @@ read -p ">> GPG Key Passphrase*: " -s gpg_passphrase
 echo
 
 # Check if the required inputs are not empty
-if [ -z $user_id ] || [ -z $source_dir ] || [ -z $gpg_passphrase ]; then
+if [ -z "$user_id" ] || [ -z $source_dir ] || [ -z $gpg_passphrase ]; then
 	echo ">> One or more inputs are empty. Aborted."
 	exit 1
 fi
 
 # Check if the user's GPG key exist
-if ! gpg --list-key ${user_id} >/dev/null 2>&1; then
+if ! gpg --list-key "${user_id}" >/dev/null 2>&1; then
 	echo ">> GPG key for '${user_id}' does not exist. Aborted."
 	exit 1
 fi
@@ -36,7 +36,7 @@ else
 fi
 
 # Verify passphrase
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --local-user ${user_id} --export-secret-key >/dev/null 2>&1
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-key "${user_id}" >/dev/null 2>&1
 exit_status=$?
 
 if [ $exit_status -eq 0 ]; then
@@ -47,9 +47,9 @@ else
 fi
 
 # Export keys
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor --local-user "${user_id}" > ${source_dir}/public.asc
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys --local-user "${user_id}" > ${source_dir}/secret.key
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys --local-user "${user_id}" > ${source_dir}/secret_sub.key
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${source_dir}/public.asc
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${source_dir}/secret.key
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${source_dir}/secret_sub.key
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-ownertrust > ${source_dir}/ownertrust.txt
 echo ">> Done."
 
