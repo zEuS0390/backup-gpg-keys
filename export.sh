@@ -10,12 +10,12 @@ echo ">> It is not liable or responsible for any consequences arising from the u
 
 # Get inputs
 read -p ">> User ID*: " user_id
-read -p ">> Source Directory*: " source_dir
+read -p ">> Output Directory*: " output_dir
 read -p ">> GPG Key Passphrase*: " -s gpg_passphrase
 echo
 
 # Check if the required inputs are not empty
-if [ -z "$user_id" ] || [ -z $source_dir ] || [ -z $gpg_passphrase ]; then
+if [ -z "$user_id" ] || [ -z "$output_dir" ] || [ -z $gpg_passphrase ]; then
 	echo ">> One or more inputs are empty. Aborted."
 	exit 1
 fi
@@ -26,13 +26,13 @@ if ! gpg --list-key "${user_id}" >/dev/null 2>&1; then
 	exit 1
 fi
 
-# Check if the source directory exists
-if [ ! -d ${source_dir} ]; then
-	echo ">> '${source_dir}' does not exist."
+# Check if the output directory exists
+if [ ! -d "${output_dir}" ]; then
+	echo ">> '${output_dir}' does not exist."
 	echo ">> Attempting to create directory."
-	mkdir -p ${source_dir}
+	mkdir -p ${output_dir}
 else
-	echo ">> '${source_dir}' directory found."
+	echo ">> '${output_dir}' directory found."
 fi
 
 # Verify passphrase
@@ -47,10 +47,10 @@ else
 fi
 
 # Export keys
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${source_dir}/public.asc
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${source_dir}/secret.key
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${source_dir}/secret_sub.key
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-ownertrust > ${source_dir}/ownertrust.txt
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${output_dir}/public.asc
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${output_dir}/secret.key
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${output_dir}/secret_sub.key
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-ownertrust > ${output_dir}/ownertrust.txt
 echo ">> Done."
 
 # Wait for user input to exit
