@@ -4,7 +4,7 @@
 The script exports GPG keys, making it quicker and more convenient for the user to migrate them to another machine or system. I made it for personal use but you are welcome to use it as well if you would like to.
 In this video, you'll find a step-by-step demonstration of how to use it. Although the usage itself is self-evident, I believe it is better to be seen and understood beforehand.
 
-https://github.com/zEuS0390/export-gpg-keys/assets/39390245/cc4c80f2-9b3e-4d4a-8dab-e6404bc25645
+**Demo:** https://youtu.be/rX2tKTZVeZA?si=0qQCc3VDuzirndFb
 
 ## ❓ What is GPG?
 
