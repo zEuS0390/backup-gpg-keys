@@ -48,8 +48,8 @@ fi
 
 # Export keys
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${output_dir}/public.asc
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${output_dir}/secret.key
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${output_dir}/secret_sub.key
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${output_dir}/secret.gpg
+gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${output_dir}/secret_sub.gpg
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-ownertrust > ${output_dir}/ownertrust.txt
 echo ">> Done."
 
