@@ -30,7 +30,7 @@ fi
 if [ ! -d "${output_dir}" ]; then
 	echo ">> '${output_dir}' does not exist."
 	echo ">> Attempting to create directory."
-	mkdir -p ${output_dir}
+	mkdir -p "${output_dir}"
 else
 	echo ">> '${output_dir}' directory found."
 fi
@@ -50,9 +50,11 @@ fi
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${output_dir}/public.asc
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${output_dir}/secret.gpg
 gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${output_dir}/secret_sub.gpg
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-ownertrust > ${output_dir}/ownertrust.txt
 echo ">> Done."
 
 # Wait for user input to exit
 read -n 1 -s -r -p ">> Press any key to exit."
 echo
+
+# Clean up
+unset gpg_passphrase
