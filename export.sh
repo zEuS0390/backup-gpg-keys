@@ -58,3 +58,4 @@ echo
 
 # Clean up
 unset gpg_passphrase
+
