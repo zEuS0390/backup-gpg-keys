@@ -36,20 +36,29 @@ else
 fi
 
 # Verify passphrase
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-key "${user_id}" >/dev/null 2>&1
-exit_status=$?
+exec 3<<<"${gpg_passphrase}"
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --sign --user "${user_id}" --output /dev/null <<< "dummy" >/dev/null 2>&1
+exec 3<&-
 
+exit_status=$?
 if [ $exit_status -eq 0 ]; then
 	echo ">> The passphrase is correct."
 else
 	echo ">> The passphrase is incorrect. Aborted."
+    rm -rf ${output_dir}
 	exit 1
 fi
 
 # Export keys
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export --armor "${user_id}" > ${output_dir}/public.asc
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-keys "${user_id}" > ${output_dir}/secret.gpg
-gpg --batch --pinentry-mode loopback --passphrase "${gpg_passphrase}" --export-secret-subkeys "${user_id}" > ${output_dir}/secret_sub.gpg
+exec 3<<<"${gpg_passphrase}"
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export --armor --user "${user_id}" > ${output_dir}/public.asc
+exec 3<&-
+exec 3<<<"${gpg_passphrase}"
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-keys --user "${user_id}" > ${output_dir}/secret.gpg
+exec 3<&-
+exec 3<<<"${gpg_passphrase}"
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-subkeys --user "${user_id}" > ${output_dir}/secret_sub.gpg
+exec 3<&-
 echo ">> Done."
 
 # Wait for user input to exit
