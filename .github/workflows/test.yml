@@ -29,4 +29,5 @@ jobs:
       # Exeute the script
       - name: Test the script
         run: |
+            chmod +x ${{github.workspace}}/export.sh
             echo -e "dummy\nmygpgkeys\npass123\n\n"| ${{github.workspace}}/export.sh
