@@ -1,0 +1,32 @@
+name: Test Script
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Install dependencies
+      - name: Install dependencies
+        run: sudo apt-get install -y gnupg
+
+      # Create dummy GPG Keys
+      - name: Create dummy GPG keys
+        run: |
+            echo -e "Key-Type: RSA\nKey-Length: 4096\nName-Real: dummy\nName-Email: dummy@domain.com\nExpire-Date: 0\nPassphrase: pass123\n%commit" | gpg --batch --gen-key
+            # %no-protection
+
+      # Exeute the script
+      - name: Test the script
+        run: |
+            echo -e "dummy\nmygpgkeys\npass123\n\n"| ${{github.workspace}}/export.sh
