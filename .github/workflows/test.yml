@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,46 @@ jobs:
       - name: Create dummy GPG keys
         run: |
             echo -e "Key-Type: RSA\nKey-Length: 4096\nName-Real: dummy\nName-Email: dummy@domain.com\nExpire-Date: 0\nPassphrase: pass123\n%commit" | gpg --batch --gen-key
-            # %no-protection
 
       # Exeute the script
       - name: Test the script
         run: |
             chmod +x ${{github.workspace}}/export.sh
             echo -e "dummy\nmygpgkeys\npass123\n\n"| ${{github.workspace}}/export.sh
+
+  test-windows:
+    runs-on: windows-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Install dependencies
+      - name: Install dependencies
+        run: choco install -y gnupg
+
+      # Create dummy GPG Keys
+      - name: Create dummy GPG keys
+        run: |
+            echo "Key-Type: RSA" > ${{github.workspace}}\mykeyparams.txt
+            echo "Key-Length: 4096" >> ${{github.workspace}}\mykeyparams.txt
+            echo "Name-Real: dummy" >> ${{github.workspace}}\mykeyparams.txt
+            echo "Name-Email: dummy@domain.com" >> ${{github.workspace}}\mykeyparams.txt
+            echo "Expire-Date: 0" >> ${{github.workspace}}\mykeyparams.txt
+            echo "Passphrase: pass123" >> ${{github.workspace}}\mykeyparams.txt
+            echo "%commit" >> ${{github.workspace}}\mykeyparams.txt
+            cp ${{github.workspace}}\mykeyparams.txt ~\Desktop\mykeyparams.txt
+            type ${{github.workspace}}\mykeyparams.txt | gpg --batch --gen-key
+
+      # Exeute the script
+      - name: Test the script
+        run: |
+            chmod +x ${{github.workspace}}\export.sh
+            echo dummy`nmygpgkeys`npass123`n`n | sh ${{github.workspace}}\export.sh
+
+      # Clean up
+      - name: Clean up
+        run: |
+          rm ${{github.workspace}}\mykeyparams.txt
+          gpg --with-colons --fingerprint "dummy" | Select-String '^fpr' | ForEach-Object { ($_ -split ':')[9] } | ForEach-Object { gpg --batch --yes --delete-secret-keys $_ }
+          gpg --with-colons --fingerprint "dummy" | Select-String '^fpr' | ForEach-Object { ($_ -split ':')[9] } | ForEach-Object { gpg --batch --yes --delete-keys $_ }
