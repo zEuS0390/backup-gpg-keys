@@ -40,7 +40,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: choco install -y gnupg
+        run: choco install -y gpg4win
 
       # Create dummy GPG Keys
       - name: Create dummy GPG keys
@@ -67,3 +67,4 @@ jobs:
           rm ${{github.workspace}}\mykeyparams.txt
           gpg --with-colons --fingerprint "dummy" | Select-String '^fpr' | ForEach-Object { ($_ -split ':')[9] } | ForEach-Object { gpg --batch --yes --delete-secret-keys $_ }
           gpg --with-colons --fingerprint "dummy" | Select-String '^fpr' | ForEach-Object { ($_ -split ':')[9] } | ForEach-Object { gpg --batch --yes --delete-keys $_ }
+
