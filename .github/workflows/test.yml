@@ -38,10 +38,6 @@ jobs:
       # Checkout the repository
       - uses: actions/checkout@v4
 
-      # Install dependencies
-      - name: Install dependencies
-        run: choco install -y gpg4win
-
       # Create dummy GPG Keys
       - name: Create dummy GPG keys
         run: |
