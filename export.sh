@@ -37,7 +37,7 @@ fi
 
 # Verify passphrase
 exec 3<<<"${gpg_passphrase}"
-gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-key --user "${user_id}" >/dev/null 2>&1
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-key --local-user "${user_id}" >/dev/null 2>&1
 exit_status=$?
 exec 3<&-
 if [ $exit_status -eq 0 ]; then
@@ -50,7 +50,7 @@ fi
 
 # Export keys
 exec 3<<<"${gpg_passphrase}"
-gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export --armor --user "${user_id}" > ${output_dir}/public.asc
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export --armor --local-user "${user_id}" > ${output_dir}/public.asc
 exit_status=$?
 exec 3<&-
 if [ $exit_status -ne 0 ]; then
@@ -58,7 +58,7 @@ if [ $exit_status -ne 0 ]; then
 fi
 
 exec 3<<<"${gpg_passphrase}"
-gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-keys --user "${user_id}" > ${output_dir}/secret.gpg
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-keys --local-user "${user_id}" > ${output_dir}/secret.gpg
 exit_status=$?
 exec 3<&-
 if [ $exit_status -ne 0 ]; then
@@ -66,7 +66,7 @@ if [ $exit_status -ne 0 ]; then
 fi
 
 exec 3<<<"${gpg_passphrase}"
-gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-subkeys --user "${user_id}" > ${output_dir}/secret_sub.gpg
+gpg --batch --pinentry-mode loopback --passphrase-fd 3 --export-secret-subkeys --local-user "${user_id}" > ${output_dir}/secret_sub.gpg
 exit_status=$?
 exec 3<&-
 if [ $exit_status -ne 0 ]; then
